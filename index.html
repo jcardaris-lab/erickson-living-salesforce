@@ -280,81 +280,6 @@
     }
 
     /* ============================================================
-       SECTION 2.5 — EXECUTIVE WELCOME
-    ============================================================ */
-    .executive {
-      background: var(--navy);
-      padding: 96px 0;
-    }
-    .executive__grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: center;
-    }
-    .executive__video-wrap {
-      aspect-ratio: 16/9;
-      background: #1E293B;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 8px;
-      overflow: hidden;
-      position: relative;
-    }
-    .executive__video-wrap iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 10px;
-    }
-    .executive__play-icon {
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      background: var(--cyan);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 0 8px rgba(0,57,93,0.3);
-    }
-    .executive__video-label { color: #94A3B8; font-size: 13px; margin: 0; }
-    .executive__text { color: #fff; }
-    .executive__eyebrow {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.6);
-      background: rgba(255,255,255,0.08);
-      padding: 4px 12px;
-      border-radius: 100px;
-      margin-bottom: 20px;
-    }
-    .executive__title {
-      font-size: clamp(22px, 3vw, 34px);
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 16px;
-      line-height: 1.25;
-    }
-    .executive__quote {
-      font-size: 16px;
-      color: rgba(255,255,255,0.68);
-      line-height: 1.75;
-      font-style: italic;
-      border-left: 3px solid var(--cyan);
-      padding-left: 18px;
-      margin-bottom: 32px;
-    }
-    .executive__ctas { display: flex; gap: 12px; flex-wrap: wrap; }
-
-    /* ============================================================
        SECTION 3 — CHALLENGES
     ============================================================ */
     .challenges { background: var(--bg); }
@@ -968,8 +893,7 @@
       .innovations__grid { grid-template-columns: repeat(2, 1fr); }
       .proof-band__grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
       .proof-band__divider { display: none; }
-      .executive__grid { grid-template-columns: 1fr; gap: 40px; }
-      .stories__grid { grid-template-columns: 1fr; }
+.stories__grid { grid-template-columns: 1fr; }
       .roi__layout { grid-template-columns: 1fr; }
       .footer__top { grid-template-columns: 1fr 1fr; }
     }
@@ -1098,43 +1022,6 @@
         <div class="hero__trust-item">
           <div class="hero__trust-value">$<span class="counter" data-target="500">0</span>M</div>
           <div class="hero__trust-label">Your GMV scale</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     SECTION 2.5 — EXECUTIVE WELCOME
-============================================================ -->
-<section class="executive">
-  <div class="container">
-    <div class="executive__grid">
-      <div class="executive__video-wrap reveal" id="execVideoWrap">
-        <video
-          src="https://files2.heygen.ai/aws_pacific/avatar_tmp/81ea3638f2e74c97bde40edd5737cbca/c0804127760d492c8e9ee88c3382de51.mp4?Expires=1779938025&Signature=kmn1yzmC76ua7dCcvVNhDpB8uE0HqZhj1~0gyTDxYUzXuvTX4c4hg1BbCzZTKejIWHnMg5R-Z1GC5W0Edjd0ntVYhvZvUNwdd1Tm~DuzihuC2BcMKlj5heWZnnccsDht5zztdlUQzgrQ9C1jqsx4pMYSrQSPDXBomLQa1VYplcXnJkbRAxVlH5wE8hL9k1f9F2EV~DxsvEPoGtSQrFuzBeL6-TZZcleA1b7dzjBFh6T54gUUM7gRULazCUvrlpxHUDLftlUURAUisBWVu8G4MuP3vA5IOzlHq37e-18PKVOKWG3K2ayXkNipaURlvxRNBoMbvFvD1v3gF1BKgpeZ7Q__&Key-Pair-Id=K38HBHX5LX3X2H"
-          controls
-          preload="metadata"
-          style="width:100%;height:100%;border-radius:10px;object-fit:cover;"
-          id="execVideo">
-        </video>
-      </div>
-
-      <div class="executive__text reveal reveal-delay-1">
-        <span class="executive__eyebrow">Executive Message</span>
-        <h2 class="executive__title">A personal note from Gordon Evans,<br/>CMO of Agentforce Commerce</h2>
-        <blockquote class="executive__quote">
-          "Hi there &mdash; I'm Gordon Evans, CMO of Agentforce Commerce at Salesforce. I wanted to personally welcome you and the team at Erickson Living Management to this page. We didn't build a generic deck &mdash; we built this specifically for you. You'll find the challenges we know senior living and healthcare management teams are facing right now, with Salesforce solutions mapped directly to each one."
-        </blockquote>
-        <div class="executive__ctas">
-          <a href="#" class="btn btn-primary" id="watchVideoBtn">
-            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            Watch Welcome
-          </a>
-          <a href="mailto:t.raizes@salesforce.com" class="btn btn-secondary">
-            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Schedule Time
-          </a>
         </div>
       </div>
     </div>
@@ -1752,56 +1639,6 @@
   });
   calcROI(); // initial render
 
-  // ── HeyGen video injection (poll on load) ─────────────────────
-  // Video ID: c0804127760d492c8e9ee88c3382de51
-  // When video is ready, replace placeholder with actual video
-  const VIDEO_ID = 'c0804127760d492c8e9ee88c3382de51';
-
-  async function checkVideo() {
-    try {
-      const resp = await fetch(
-        `https://api.heygen.com/v1/video_status.get?video_id=${VIDEO_ID}`,
-        { headers: { 'X-Api-Key': 'sk_V2_hgu_kB87tAsNV9c_Bm5sEeV6rAxc0d9LpkEGWvoWln674FEl' } }
-      );
-      const data = await resp.json();
-      const status = data?.data?.status;
-      const videoUrl = data?.data?.video_url;
-
-      if (status === 'completed' && videoUrl) {
-        injectVideo(videoUrl);
-      } else if (status === 'processing' || status === 'pending' || status === 'waiting') {
-        // Retry in 30 seconds
-        setTimeout(checkVideo, 30000);
-      }
-    } catch(e) {
-      // silently fail — placeholder stays
-    }
-  }
-
-  function injectVideo(url) {
-    const wrap = document.getElementById('execVideoWrap');
-    if (!wrap) return;
-    // Replace placeholder with video element
-    wrap.innerHTML = `<video
-      src="${url}"
-      controls
-      poster=""
-      style="width:100%;height:100%;border-radius:10px;object-fit:cover;"
-      preload="metadata">
-    </video>`;
-    // Update watch button
-    const btn = document.getElementById('watchVideoBtn');
-    if (btn) {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const vid = wrap.querySelector('video');
-        if (vid) { vid.scrollIntoView({behavior:'smooth'}); vid.play(); }
-      });
-    }
-  }
-
-  // Start polling when page loads
-  window.addEventListener('load', () => setTimeout(checkVideo, 3000));
 </script>
 
 </body>
