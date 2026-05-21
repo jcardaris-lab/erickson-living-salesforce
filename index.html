@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Erickson Living Management × Salesforce Commerce | Digital Sales Room</title>
+  <meta name="description" content="A personalized Salesforce Commerce showcase built specifically for Erickson Living Management — addressing procurement fragmentation, staff efficiency, and spend governance across 20+ senior living communities." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — Erickson Living Brand Colors
+       Primary: #00395D (Astronaut Blue), Green: #00843D,
+       Orange: #DF600C, Teal: #007FAD
+    ============================================================ */
+    :root {
+      --cyan: #00395D;
+      --cyan-d: #002B47;
+      --cyan-l: #DBEEFE;
+      --cyan-xl: #EEF5FB;
+      --orange: #DF600C;
+      --orange-l: #FEF0E7;
+      --green: #00843D;
+      --green-l: #D1FAE5;
+      --teal: #007FAD;
+      --navy: #001F33;
+      --slate: #1E293B;
+      --muted: #64748B;
+      --border: #E2E8F0;
+      --bg: #F8FAFC;
+      --white: #FFFFFF;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08);
+      --radius: 12px;
+      --radius-lg: 16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--slate);
+      background: var(--bg);
+      overflow-x: hidden;
+    }
+    h1,h2,h3,h4,h5 { font-family: 'Figtree', system-ui, sans-serif; line-height: 1.15; letter-spacing: -0.02em; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ============================================================
+       UTILITIES
+    ============================================================ */
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .container--wide { max-width: 1400px; }
+    .section { padding: 96px 0; }
+    .section--sm { padding: 64px 0; }
+    .eyebrow {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      background: var(--cyan-xl);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .eyebrow--white {
+      color: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.12);
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 620px;
+      line-height: 1.7;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--orange);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(223,96,12,0.30);
+    }
+    .btn-primary:hover { background: #C8520A; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(223,96,12,0.40); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.35);
+      backdrop-filter: blur(8px);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.20); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--cyan);
+      border: 1.5px solid var(--cyan);
+    }
+    .btn-outline:hover { background: var(--cyan-xl); transform: translateY(-1px); }
+
+    /* Scroll reveals */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ============================================================
+       SECTION 1 — NAV
+    ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      height: 64px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .nav.scrolled {
+      border-color: var(--border);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+    .nav__left { display: flex; align-items: center; gap: 20px; }
+    .nav__sf-logo { height: 26px; width: auto; }
+    .nav__divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+    .nav__erickson-logo { height: 22px; width: auto; }
+    .nav__right { display: flex; align-items: center; gap: 12px; }
+    .nav__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 20px;
+      background: var(--cyan);
+      color: #fff;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .nav__cta:hover { background: var(--cyan-d); transform: translateY(-1px); }
+
+    /* ============================================================
+       SECTION 2 — HERO
+    ============================================================ */
+    .hero {
+      padding-top: 64px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background:
+        linear-gradient(135deg, rgba(15,23,42,0.90) 0%, rgba(30,41,59,0.82) 50%, rgba(0,0,0,0.88) 100%),
+        url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      position: relative;
+    }
+    .hero__urgency {
+      background: linear-gradient(90deg, #B91C1C 0%, #991B1B 100%);
+      padding: 13px 24px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.01em;
+      line-height: 1.5;
+    }
+    .hero__urgency-inner { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .hero__urgency-icon { font-size: 15px; flex-shrink: 0; }
+    .hero__content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 0 100px;
+    }
+    .hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 28px;
+    }
+    .hero__eyebrow-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+    .hero__title {
+      font-size: clamp(32px, 5.5vw, 64px);
+      font-weight: 900;
+      color: #fff;
+      max-width: 820px;
+      margin-bottom: 24px;
+      line-height: 1.08;
+    }
+    .hero__title span { color: #6DD3FF; }
+    .hero__subtitle {
+      font-size: clamp(15px, 2vw, 19px);
+      color: rgba(255,255,255,0.78);
+      max-width: 640px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+    .hero__ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 60px; }
+    .hero__trust {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+    }
+    .hero__trust-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .hero__trust-value {
+      font-family: 'Figtree', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+    }
+    .hero__trust-value span { color: #6DD3FF; }
+    .hero__trust-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.58);
+      margin-top: 2px;
+    }
+    .hero__trust-divider {
+      width: 1px;
+      height: 36px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* ============================================================
+       SECTION 2.5 — EXECUTIVE WELCOME
+    ============================================================ */
+    .executive {
+      background: var(--navy);
+      padding: 96px 0;
+    }
+    .executive__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .executive__video-wrap {
+      aspect-ratio: 16/9;
+      background: #1E293B;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .executive__video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 10px;
+    }
+    .executive__play-icon {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 8px rgba(0,57,93,0.3);
+    }
+    .executive__video-label { color: #94A3B8; font-size: 13px; margin: 0; }
+    .executive__text { color: #fff; }
+    .executive__eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.08);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .executive__title {
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 16px;
+      line-height: 1.25;
+    }
+    .executive__quote {
+      font-size: 16px;
+      color: rgba(255,255,255,0.68);
+      line-height: 1.75;
+      font-style: italic;
+      border-left: 3px solid var(--cyan);
+      padding-left: 18px;
+      margin-bottom: 32px;
+    }
+    .executive__ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ============================================================
+       SECTION 3 — CHALLENGES
+    ============================================================ */
+    .challenges { background: var(--bg); }
+    .challenges__header { margin-bottom: 56px; }
+    .challenges__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .challenge-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: box-shadow 0.25s, transform 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .challenge-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #B91C1C, #DC2626);
+    }
+    .challenge-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+    .challenge-card__icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: #FEE2E2;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    .challenge-card__number {
+      font-family: 'Figtree', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: #B91C1C;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .challenge-card__title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .challenge-card__body {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+    .challenge-card__stat {
+      font-size: 13px;
+      font-style: italic;
+      color: #B91C1C;
+      background: #FFF1F1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border-left: 3px solid #B91C1C;
+    }
+
+    /* ============================================================
+       SECTION 4 — SOLUTION
+    ============================================================ */
+    .solution {
+      background: var(--white);
+    }
+    .solution__header { margin-bottom: 56px; }
+    .solution__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .solution-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: box-shadow 0.25s, transform 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .solution-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--teal));
+    }
+    .solution-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+    .solution-card__icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--cyan-xl);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    .solution-card__title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .solution-card__body {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+    .solution-card__kpi {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--cyan-xl);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--cyan-d);
+    }
+    .solution-card__kpi-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); }
+
+    /* ============================================================
+       SECTION 5 — USE CASES
+    ============================================================ */
+    .use-cases { background: var(--bg); }
+    .use-cases__header { margin-bottom: 56px; }
+    .use-cases__list { display: flex; flex-direction: column; gap: 0; }
+    .use-case-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0;
+      align-items: stretch;
+      border-bottom: 1px solid var(--border);
+    }
+    .use-case-row:last-child { border-bottom: none; }
+    .use-case-before,
+    .use-case-after {
+      padding: 24px 28px;
+    }
+    .use-case-before {
+      background: #FFF8F8;
+      border-right: none;
+    }
+    .use-case-after {
+      background: #F0FDF4;
+    }
+    .use-case-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .use-case-before .use-case-label { color: #B91C1C; }
+    .use-case-after .use-case-label { color: var(--green); }
+    .use-case-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--slate);
+    }
+    .use-case-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      background: var(--white);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+    .use-case-arrow svg { flex-shrink: 0; }
+
+    /* ============================================================
+       SECTION 6 — CUSTOMER STORIES
+    ============================================================ */
+    .stories { background: var(--white); }
+    .stories__header { margin-bottom: 56px; }
+    .stories__grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 32px;
+      align-items: stretch;
+    }
+    .stories__video-wrap {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      background: var(--navy);
+      box-shadow: var(--shadow-lg);
+    }
+    .stories__video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .stories__forrester {
+      background: linear-gradient(135deg, var(--navy) 0%, #0F2744 100%);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+      box-shadow: var(--shadow-lg);
+    }
+    .stories__forrester-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+    }
+    .stories__forrester-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 28px;
+      line-height: 1.3;
+    }
+    .forrester-stat {
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .forrester-stat:last-child { border-bottom: none; padding-bottom: 0; }
+    .forrester-stat__value {
+      font-family: 'Figtree', sans-serif;
+      font-size: 36px;
+      font-weight: 900;
+      color: #6DD3FF;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .forrester-stat__label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+    .stories__video-caption {
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--muted);
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* ============================================================
+       SECTION 7 — SOCIAL PROOF BAND
+    ============================================================ */
+    .proof-band {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--teal) 100%);
+      padding: 56px 0;
+    }
+    .proof-band__grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+      text-align: center;
+    }
+    .proof-band__item { color: #fff; }
+    .proof-band__value {
+      font-family: 'Figtree', sans-serif;
+      font-size: clamp(28px, 3vw, 42px);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .proof-band__label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.4;
+    }
+    .proof-band__source {
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 4px;
+    }
+    .proof-band__divider {
+      width: 1px;
+      background: rgba(255,255,255,0.2);
+      align-self: stretch;
+    }
+
+    /* ============================================================
+       SECTION 8 — LATEST INNOVATIONS
+    ============================================================ */
+    .innovations { background: var(--bg); }
+    .innovations__header { margin-bottom: 56px; }
+    .innovations__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .innovation-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: box-shadow 0.25s, transform 0.25s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .innovation-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+    .innovation-card__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: linear-gradient(90deg, #6DD3FF22, #00395D22);
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+    .innovation-card__icon { font-size: 28px; }
+    .innovation-card__title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+    .innovation-card__body {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+    .innovation-card__link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: gap 0.2s;
+    }
+    .innovation-card__link:hover { gap: 8px; }
+
+    /* ============================================================
+       SECTION 9 — ROI CALCULATOR
+    ============================================================ */
+    .roi { background: var(--white); }
+    .roi__header { margin-bottom: 56px; }
+    .roi__layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    .roi__panel-a {
+      background: linear-gradient(135deg, var(--navy) 0%, #0F2744 100%);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      color: #fff;
+    }
+    .roi__panel-a-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 24px;
+    }
+    .roi__stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .roi__stat {
+      padding: 16px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .roi__stat-value {
+      font-family: 'Figtree', sans-serif;
+      font-size: 32px;
+      font-weight: 900;
+      color: #6DD3FF;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .roi__stat-label { font-size: 13px; color: rgba(255,255,255,0.55); }
+    .roi__forrester-badge {
+      margin-top: 20px;
+      padding: 12px 16px;
+      background: rgba(109,211,255,0.10);
+      border: 1px solid rgba(109,211,255,0.20);
+      border-radius: 8px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+    }
+    .roi__panel-c {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+    }
+    .roi__panel-c-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 24px;
+    }
+    .roi__input-group { margin-bottom: 20px; }
+    .roi__label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .roi__input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--navy);
+      background: var(--white);
+      transition: border-color 0.2s;
+    }
+    .roi__input:focus { outline: none; border-color: var(--cyan); }
+    .roi__outputs {
+      margin-top: 24px;
+      padding: 20px;
+      background: var(--cyan-xl);
+      border-radius: 10px;
+      border: 1px solid var(--cyan-l);
+    }
+    .roi__output-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(0,57,93,0.08);
+    }
+    .roi__output-item:last-child { border-bottom: none; }
+    .roi__output-label { font-size: 14px; color: var(--slate); }
+    .roi__output-value {
+      font-family: 'Figtree', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--cyan);
+    }
+    .roi__disclaimer {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       SECTION 10 — CTA
+    ============================================================ */
+    .cta-section {
+      background: linear-gradient(135deg, var(--navy) 0%, #0B2030 50%, var(--cyan-d) 100%);
+      padding: 120px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(0,127,173,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-section__eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.08);
+      padding: 4px 14px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    .cta-section__title {
+      font-size: clamp(28px, 4.5vw, 52px);
+      font-weight: 900;
+      color: #fff;
+      max-width: 720px;
+      margin: 0 auto 20px;
+      line-height: 1.1;
+    }
+    .cta-section__sub {
+      font-size: 18px;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 44px;
+    }
+    .cta-section__ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .cta-section__contact {
+      margin-top: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .cta-section__avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--cyan), var(--teal));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Figtree', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .cta-section__contact-text { text-align: left; }
+    .cta-section__contact-name { font-size: 15px; font-weight: 600; color: #fff; }
+    .cta-section__contact-title { font-size: 13px; color: rgba(255,255,255,0.55); }
+
+    /* ============================================================
+       SECTION 11 — FOOTER
+    ============================================================ */
+    .footer {
+      background: var(--navy);
+      padding: 64px 0 36px;
+    }
+    .footer__top {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .footer__col-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 16px;
+    }
+    .footer__ae-name {
+      font-family: 'Figtree', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .footer__ae-title { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 20px; }
+    .footer__ae-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--cyan);
+      color: #fff;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .footer__ae-link:hover { background: var(--teal); }
+    .footer__links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer__links a {
+      font-size: 14px;
+      color: rgba(255,255,255,0.55);
+      transition: color 0.2s;
+    }
+    .footer__links a:hover { color: #fff; }
+    .footer__legal { font-size: 12px; color: rgba(255,255,255,0.35); line-height: 1.65; }
+    .footer__bottom {
+      margin-top: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer__copy { font-size: 12px; color: rgba(255,255,255,0.28); }
+    .footer__logos { display: flex; align-items: center; gap: 16px; opacity: 0.35; }
+    .footer__sf-logo { height: 18px; filter: brightness(0) invert(1); }
+    .footer__el-logo { height: 14px; filter: brightness(0) invert(1); }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .challenges__grid { grid-template-columns: repeat(2, 1fr); }
+      .solution__grid { grid-template-columns: repeat(2, 1fr); }
+      .innovations__grid { grid-template-columns: repeat(2, 1fr); }
+      .proof-band__grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .proof-band__divider { display: none; }
+      .executive__grid { grid-template-columns: 1fr; gap: 40px; }
+      .stories__grid { grid-template-columns: 1fr; }
+      .roi__layout { grid-template-columns: 1fr; }
+      .footer__top { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .section { padding: 64px 0; }
+      .challenges__grid { grid-template-columns: 1fr; }
+      .solution__grid { grid-template-columns: 1fr; }
+      .innovations__grid { grid-template-columns: 1fr 1fr; }
+      .proof-band__grid { grid-template-columns: repeat(2, 1fr); }
+      .use-case-row { grid-template-columns: 1fr; }
+      .use-case-arrow { display: none; }
+      .use-case-before { border-bottom: 2px solid #B91C1C44; }
+      .footer__top { grid-template-columns: 1fr; gap: 32px; }
+      .footer__bottom { flex-direction: column; align-items: flex-start; }
+      .hero__trust { gap: 20px; }
+      .hero__trust-divider { display: none; }
+      .nav__erickson-logo { display: none; }
+    }
+    @media (max-width: 480px) {
+      .innovations__grid { grid-template-columns: 1fr; }
+      .proof-band__grid { grid-template-columns: 1fr 1fr; }
+      .roi__stat-grid { grid-template-columns: 1fr; }
+      .hero__ctas { flex-direction: column; }
+      .nav__cta span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     SECTION 1 — NAV
+============================================================ -->
+<nav class="nav" id="mainNav">
+  <div class="container">
+    <div class="nav__inner">
+      <div class="nav__left">
+        <!-- Salesforce Logo (inline SVG for reliability) -->
+        <svg class="nav__sf-logo" viewBox="0 0 130 90" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Salesforce">
+          <path d="M54.3 10.1c4.2-4.4 10-7.1 16.5-7.1 8.6 0 16.1 4.8 20.1 11.9a27.7 27.7 0 0 1 11.3-2.4c15.5 0 28 12.7 28 28.3s-12.6 28.3-28 28.3c-1.9 0-3.7-.2-5.5-.5a19.8 19.8 0 0 1-17.9 10.5c-3.7 0-7.1-.9-10.1-2.5-3.6 8.4-11.9 14.3-21.5 14.3-10.1 0-18.7-6.4-22-15.3-1.5.3-3 .5-4.5.5C9.5 76.1 0 66.4 0 54.5c0-8.1 4.4-15.2 10.9-19-.7-2.3-1.1-4.8-1.1-7.4 0-14 11.3-25.2 25.3-25.2 8.2 0 15.5 3.9 20.2 9.9" fill="#00A1E0"/>
+          <text x="8" y="52" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="white">Salesforce</text>
+        </svg>
+        <div class="nav__divider"></div>
+        <!-- Erickson Living Logo -->
+        <svg class="nav__erickson-logo" viewBox="0 0 128.6 27.4" xmlns="http://www.w3.org/2000/svg" aria-label="Erickson Senior Living">
+          <style>.nslh0{fill:#00B156;}.nslh1{fill:#00395D;}</style>
+          <g>
+            <path class="nslh0" d="M31.2,12.8C22.7,21.5,7.8,12,0,26.6c0,0,0,0.1,0.1,0C8.7,16.2,24.5,25.4,31.2,12.8z"/>
+            <path class="nslh0" d="M34.5,6.4c-8.4,8.7-23.4-0.8-31.2,13.7c0,0,0,0.1,0.1,0C12.1,9.8,27.9,19,34.5,6.4z"/>
+            <path class="nslh0" d="M37.9,0C29.5,8.7,14.6-0.8,6.8,13.7c0,0,0,0.1,0.1,0C15.5,3.4,31.3,12.6,37.9,0z"/>
+          </g>
+          <path class="nslh1" d="M42.3,14.6h2.5V2.5h-2.5V1.4h12.3v4.5h-0.9C53.2,3,53,2.5,51.6,2.5h-5v5.4h2.2c1.3,0,1.5-0.2,1.8-2.2h0.9v5.5h-0.9c-0.3-2.1-0.5-2.3-1.8-2.3h-2.2v5.8h4.9c1.6,0,1.8-0.5,2.4-3.8h0.9v4.9H42.4L42.3,14.6z"/>
+          <path class="nslh1" d="M56.4,14.6h1.7V7h-1.7V5.8h3.3v2.3c0.6-1.7,1.8-2.5,3-2.5c1,0,1.6,0.7,1.6,1.5c0,0.7-0.5,1.3-1.2,1.3C62.5,8.5,62,8,62,7.3c0-0.1,0-0.3,0.1-0.4c-1.1-0.1-2,1.3-2.3,2.3v5.4h1.9v1.1h-5.3z"/>
+          <path class="nslh1" d="M65.4,14.6h1.9V7h-1.9V5.8H69v8.8h1.9v1.1h-5.4z M66.7,2.3C66.7,1.6,67.3,1,68,1c0.7,0,1.2,0.5,1.2,1.3S68.7,3.6,68,3.6C67.3,3.6,66.7,3.1,66.7,2.3z"/>
+          <path class="nslh1" d="M71.4,11c0-3.1,2-5.3,5-5.3c2.2,0,3.8,1.5,3.8,2.8c0,0.9-0.5,1.5-1.3,1.5c-0.8,0-1.2-0.6-1.2-1.2c0-0.5,0.3-1,0.8-1.2c-0.3-0.5-1.1-1-2.2-1c-1.8,0-3.1,1.6-3.1,4.2c0,2.5,1.2,4,3.2,4c1.4,0,2.4-0.8,2.9-2.3h0.9c-0.6,2.2-2.1,3.4-4.3,3.4C73.3,15.9,71.4,13.8,71.4,11z"/>
+          <path class="nslh1" d="M87.1,9.7l3.4,4.9h1.3v1.2h-4.5v-1.1h1.3L86,10.8l-1.6,1.6v2.2h1.4v1.1H81v-1.1h1.7v-12H81V1.4h3.4v9.8l4-4.3h-1.7V5.8h4.6V7h-1.5z"/>
+          <path class="nslh1" d="M92.9,12.2h1c0.5,1.7,1.7,2.8,3.3,2.8c1.2,0,1.9-0.6,1.9-1.5c0-1-0.7-1.4-2.7-2c-2.4-0.7-3.4-1.5-3.4-3s1.3-2.9,3.3-2.9c1.1,0,2.1,0.4,2.6,1.2l0.2-1.2h1V9h-1c-0.7-1.6-1.4-2.5-2.8-2.5c-0.9,0-1.8,0.5-1.8,1.4c0,0.9,0.8,1.4,2.6,1.9c2.4,0.7,3.4,1.4,3.4,3c0,1.5-1.3,3-3.4,3c-1.4,0-2.4-0.5-3.1-1.4l-0.2,1.4h-1z"/>
+          <path class="nslh1" d="M101.9,10.9c0-3.1,2.1-5.2,4.8-5.2c2.8,0,4.8,2,4.8,5.1c0,3.1-2.1,5.2-4.8,5.2C103.9,15.9,101.9,13.9,101.9,10.9z M109.6,10.8c0-2.9-1.3-4.2-3-4.2c-1.6,0-2.8,1.3-2.8,4.2s1.4,4.2,3,4.2C108.4,15,109.6,13.6,109.6,10.8z"/>
+          <path class="nslh1" d="M112.3,14.6h1.7V7h-1.7V5.8h3.3v2.6c1.2-2,2.5-2.7,3.8-2.7c1.7,0,2.7,1.1,2.7,3.1v5.8h1.7v1.1h-4.9v-1.1h1.5v-5c0-0.9-0.2-1.6-0.6-2c-0.3-0.3-0.8-0.5-1.3-0.5c-1.5,0-2.9,1.6-2.9,3.2v4.3h1.5v1.1h-4.9z"/>
+        </svg>
+      </div>
+      <div class="nav__right">
+        <a href="mailto:t.raizes@salesforce.com" class="nav__cta">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span>Schedule Meeting</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     SECTION 2 — HERO
+============================================================ -->
+<section class="hero">
+  <div class="hero__urgency">
+    <div class="hero__urgency-inner">
+      <span class="hero__urgency-icon">&#9888;</span>
+      <span>Procurement Inefficiency Is Growing Across Your Communities &mdash; Every Disconnected System Costs Time Your Staff Should Spend on Care</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="hero__content">
+      <div class="hero__eyebrow reveal">
+        <span class="hero__eyebrow-dot"></span>
+        Personalized for Erickson Living Management &middot; B2B Commerce + OMS
+      </div>
+
+      <h1 class="hero__title reveal reveal-delay-1">
+        Unify Procurement Across<br/>
+        <span>Every Community</span> &mdash;<br/>
+        Without the Overhead
+      </h1>
+
+      <p class="hero__subtitle reveal reveal-delay-2">
+        Erickson Living manages procurement across 20+ senior living communities on custom infrastructure that fragments spend visibility, creates compliance risk, and consumes staff time. Salesforce B2B Commerce + OMS changes that.
+      </p>
+
+      <div class="hero__ctas reveal reveal-delay-3">
+        <a href="mailto:t.raizes@salesforce.com" class="btn btn-primary">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Talk to Tradd Raizes
+        </a>
+        <a href="#roi" class="btn btn-secondary">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          See Your ROI
+        </a>
+      </div>
+
+      <div class="hero__trust reveal reveal-delay-4">
+        <div class="hero__trust-item">
+          <div class="hero__trust-value"><span class="counter" data-target="289">0</span>%</div>
+          <div class="hero__trust-label">ROI (Forrester TEI 2024)</div>
+        </div>
+        <div class="hero__trust-divider"></div>
+        <div class="hero__trust-item">
+          <div class="hero__trust-value">&lt;6 <span style="font-size:0.6em;color:rgba(255,255,255,0.6)">mo</span></div>
+          <div class="hero__trust-label">Payback period</div>
+        </div>
+        <div class="hero__trust-divider"></div>
+        <div class="hero__trust-item">
+          <div class="hero__trust-value">+<span class="counter" data-target="25">0</span>%</div>
+          <div class="hero__trust-label">Spend per account</div>
+        </div>
+        <div class="hero__trust-divider"></div>
+        <div class="hero__trust-item">
+          <div class="hero__trust-value">$<span class="counter" data-target="500">0</span>M</div>
+          <div class="hero__trust-label">Your GMV scale</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 2.5 — EXECUTIVE WELCOME
+============================================================ -->
+<section class="executive">
+  <div class="container">
+    <div class="executive__grid">
+      <div class="executive__video-wrap reveal" id="execVideoWrap">
+        <video
+          src="https://files2.heygen.ai/aws_pacific/avatar_tmp/81ea3638f2e74c97bde40edd5737cbca/c0804127760d492c8e9ee88c3382de51.mp4?Expires=1779938025&Signature=kmn1yzmC76ua7dCcvVNhDpB8uE0HqZhj1~0gyTDxYUzXuvTX4c4hg1BbCzZTKejIWHnMg5R-Z1GC5W0Edjd0ntVYhvZvUNwdd1Tm~DuzihuC2BcMKlj5heWZnnccsDht5zztdlUQzgrQ9C1jqsx4pMYSrQSPDXBomLQa1VYplcXnJkbRAxVlH5wE8hL9k1f9F2EV~DxsvEPoGtSQrFuzBeL6-TZZcleA1b7dzjBFh6T54gUUM7gRULazCUvrlpxHUDLftlUURAUisBWVu8G4MuP3vA5IOzlHq37e-18PKVOKWG3K2ayXkNipaURlvxRNBoMbvFvD1v3gF1BKgpeZ7Q__&Key-Pair-Id=K38HBHX5LX3X2H"
+          controls
+          preload="metadata"
+          style="width:100%;height:100%;border-radius:10px;object-fit:cover;"
+          id="execVideo">
+        </video>
+      </div>
+
+      <div class="executive__text reveal reveal-delay-1">
+        <span class="executive__eyebrow">Executive Message</span>
+        <h2 class="executive__title">A personal note from Gordon Evans,<br/>CMO of Agentforce Commerce</h2>
+        <blockquote class="executive__quote">
+          "Hi there &mdash; I'm Gordon Evans, CMO of Agentforce Commerce at Salesforce. I wanted to personally welcome you and the team at Erickson Living Management to this page. We didn't build a generic deck &mdash; we built this specifically for you. You'll find the challenges we know senior living and healthcare management teams are facing right now, with Salesforce solutions mapped directly to each one."
+        </blockquote>
+        <div class="executive__ctas">
+          <a href="#" class="btn btn-primary" id="watchVideoBtn">
+            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            Watch Welcome
+          </a>
+          <a href="mailto:t.raizes@salesforce.com" class="btn btn-secondary">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Schedule Time
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 3 — CHALLENGES
+============================================================ -->
+<section class="challenges section">
+  <div class="container">
+    <div class="challenges__header">
+      <span class="eyebrow">Current State</span>
+      <h2 class="section-title">What's Holding Erickson Living Back</h2>
+      <p class="section-subtitle">Five root-cause challenges fragmenting procurement, eroding margins, and consuming the staff time that should go to resident care.</p>
+    </div>
+
+    <div class="challenges__grid">
+
+      <div class="challenge-card reveal">
+        <div class="challenge-card__number">Challenge 01</div>
+        <div class="challenge-card__title">Procurement Fragmented Across 20+ Communities</div>
+        <div class="challenge-card__body">Each community sources independently with no centralized catalog, pricing, or visibility &mdash; making spend governance impossible at the enterprise level.</div>
+        <div class="challenge-card__stat">"Legacy sites convert 45% below Salesforce-powered benchmarks."</div>
+      </div>
+
+      <div class="challenge-card reveal reveal-delay-1">
+        <div class="challenge-card__number">Challenge 02</div>
+        <div class="challenge-card__title">Staff Time Consumed by Manual Ordering Processes</div>
+        <div class="challenge-card__body">Community managers and procurement staff spend hours each week on manual order entry, approval workflows, and vendor coordination that could be automated.</div>
+        <div class="challenge-card__stat">"Without self-service, reps spend their selling time processing routine orders."</div>
+      </div>
+
+      <div class="challenge-card reveal reveal-delay-2">
+        <div class="challenge-card__number">Challenge 03</div>
+        <div class="challenge-card__title">Custom Platform Can't Enforce Contract Pricing</div>
+        <div class="challenge-card__body">Preferred vendor pricing and contract terms aren't enforced at the point of order &mdash; resulting in off-contract spend and measurable revenue leakage.</div>
+        <div class="challenge-card__stat">"Organizations pay $473K+ over 3 years keeping legacy systems alive."</div>
+      </div>
+
+      <div class="challenge-card reveal reveal-delay-1">
+        <div class="challenge-card__number">Challenge 04</div>
+        <div class="challenge-card__title">No Centralized Catalog or Spend Visibility</div>
+        <div class="challenge-card__body">Finance and operations leadership cannot see what's being ordered, by whom, or at what price, across communities &mdash; making budget management reactive.</div>
+        <div class="challenge-card__stat">"Teams spend 2× as long on maintenance vs. innovation on legacy platforms."</div>
+      </div>
+
+      <div class="challenge-card reveal reveal-delay-2">
+        <div class="challenge-card__number">Challenge 05</div>
+        <div class="challenge-card__title">Returns and Exchanges Require Manual CS Involvement</div>
+        <div class="challenge-card__body">Every return, exchange, or order correction requires staff involvement &mdash; no self-service options exist for community managers, creating unnecessary support burden.</div>
+        <div class="challenge-card__stat">"Agents spend 40% more time per case without a unified order screen."</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 4 — SOLUTION
+============================================================ -->
+<section class="solution section">
+  <div class="container">
+    <div class="solution__header">
+      <span class="eyebrow">Salesforce Platform</span>
+      <h2 class="section-title">The Platform Built for Complexity at Your Scale</h2>
+      <p class="section-subtitle">Salesforce B2B Commerce + OMS gives Erickson Living a unified foundation &mdash; purpose-built to support multi-site procurement, contract compliance, and real-time operations.</p>
+    </div>
+
+    <div class="solution__grid">
+
+      <div class="solution-card reveal">
+        <div class="solution-card__icon">&#127968;</div>
+        <div class="solution-card__title">Centralized B2B Procurement Portal</div>
+        <div class="solution-card__body">Single platform serves all 20+ communities with consistent catalog, pricing, and ordering workflows &mdash; governed from one place, branded for each location.</div>
+        <div class="solution-card__kpi"><span class="solution-card__kpi-dot"></span>18,000+ hours automation savings</div>
+      </div>
+
+      <div class="solution-card reveal reveal-delay-1">
+        <div class="solution-card__icon">&#9881;</div>
+        <div class="solution-card__title">Automated Ordering Workflows</div>
+        <div class="solution-card__body">Staff submit and approve orders digitally &mdash; no manual entry, no paper forms. Multi-level approval flows, budget guardrails, and audit trails are built in.</div>
+        <div class="solution-card__kpi"><span class="solution-card__kpi-dot"></span>+25% spend per account</div>
+      </div>
+
+      <div class="solution-card reveal reveal-delay-2">
+        <div class="solution-card__icon">&#128176;</div>
+        <div class="solution-card__title">Account Entitlements &amp; Contract Pricing</div>
+        <div class="solution-card__body">Preferred pricing and contract terms enforced automatically at the point of order &mdash; eliminates off-contract spend and protects margins across every community.</div>
+        <div class="solution-card__kpi"><span class="solution-card__kpi-dot"></span>+25% spend per account</div>
+      </div>
+
+      <div class="solution-card reveal reveal-delay-1">
+        <div class="solution-card__icon">&#128202;</div>
+        <div class="solution-card__title">Real-Time Spend Visibility (OMS)</div>
+        <div class="solution-card__body">Finance and operations see every order, by every community, in real time. Dashboards surface spend by vendor, category, and location &mdash; enabling proactive decisions.</div>
+        <div class="solution-card__kpi"><span class="solution-card__kpi-dot"></span>40% reduction in order servicing cases</div>
+      </div>
+
+      <div class="solution-card reveal reveal-delay-2">
+        <div class="solution-card__icon">&#128257;</div>
+        <div class="solution-card__title">Self-Service Returns &amp; Order Management</div>
+        <div class="solution-card__body">Community managers track, modify, and return orders without calling a rep. Full order lifecycle managed digitally &mdash; returns initiated, confirmed, and tracked in one portal.</div>
+        <div class="solution-card__kpi"><span class="solution-card__kpi-dot"></span>289% ROI (Forrester TEI 2024)</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 5 — USE CASES
+============================================================ -->
+<section class="use-cases section">
+  <div class="container">
+    <div class="use-cases__header">
+      <span class="eyebrow">Before &amp; After</span>
+      <h2 class="section-title">What Life Looks Like After Salesforce</h2>
+      <p class="section-subtitle">Five real operational changes that Erickson Living teams will feel from day one &mdash; freeing staff to focus on care, not procurement friction.</p>
+    </div>
+
+    <div class="use-cases__list reveal">
+
+      <div class="use-case-row">
+        <div class="use-case-before">
+          <div class="use-case-label">Before</div>
+          <div class="use-case-text">Community managers call vendors for routine supply reorders &mdash; consuming hours each week in back-and-forth calls and emails.</div>
+        </div>
+        <div class="use-case-arrow">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#00395D" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="use-case-after">
+          <div class="use-case-label">After</div>
+          <div class="use-case-text">Self-service portal handles all standard reorders automatically &mdash; one-click reorder from order history, no calls required.</div>
+        </div>
+      </div>
+
+      <div class="use-case-row">
+        <div class="use-case-before">
+          <div class="use-case-label">Before</div>
+          <div class="use-case-text">Off-contract purchasing drains budget across communities with no way to enforce preferred vendor pricing at the point of order.</div>
+        </div>
+        <div class="use-case-arrow">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#00395D" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="use-case-after">
+          <div class="use-case-label">After</div>
+          <div class="use-case-text">Contract pricing enforced at point of order, every time &mdash; account entitlements ensure staff only see and pay contract rates.</div>
+        </div>
+      </div>
+
+      <div class="use-case-row">
+        <div class="use-case-before">
+          <div class="use-case-label">Before</div>
+          <div class="use-case-text">Finance can't see community-level spend until month-end close &mdash; making in-flight budget management impossible.</div>
+        </div>
+        <div class="use-case-arrow">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#00395D" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="use-case-after">
+          <div class="use-case-label">After</div>
+          <div class="use-case-text">Real-time spend dashboard across all 20+ communities &mdash; drill down by location, vendor, or category at any moment.</div>
+        </div>
+      </div>
+
+      <div class="use-case-row">
+        <div class="use-case-before">
+          <div class="use-case-label">Before</div>
+          <div class="use-case-text">Returns require back-and-forth calls with vendors and customer service teams, taking days to resolve and creating staff frustration.</div>
+        </div>
+        <div class="use-case-arrow">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#00395D" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="use-case-after">
+          <div class="use-case-label">After</div>
+          <div class="use-case-text">Self-service return initiation, status tracking, and confirmation &mdash; resolved in minutes, no phone calls needed.</div>
+        </div>
+      </div>
+
+      <div class="use-case-row">
+        <div class="use-case-before">
+          <div class="use-case-label">Before</div>
+          <div class="use-case-text">New community onboarding requires weeks of vendor setup, system configuration, and IT involvement to get procurement running.</div>
+        </div>
+        <div class="use-case-arrow">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#00395D" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="use-case-after">
+          <div class="use-case-label">After</div>
+          <div class="use-case-text">Branded procurement portal deployed in 30 minutes, no IT required &mdash; new communities inherit all catalogs, pricing, and approvals immediately.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 6 — CUSTOMER STORIES
+============================================================ -->
+<section class="stories section">
+  <div class="container">
+    <div class="stories__header">
+      <span class="eyebrow">Customer Evidence</span>
+      <h2 class="section-title">Companies Like Yours Are Already Winning</h2>
+      <p class="section-subtitle">From global industrial leaders to complex B2B procurement environments &mdash; the results speak for themselves.</p>
+    </div>
+
+    <div class="stories__grid">
+      <div class="reveal">
+        <div class="stories__video-wrap">
+          <iframe
+            src="https://www.youtube.com/embed/y2jyhwFd2VY?rel=0&modestbranding=1"
+            title="Siemens × Salesforce B2B Commerce"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <p class="stories__video-caption">Siemens &mdash; How B2B Commerce transformed procurement at global scale</p>
+      </div>
+
+      <div class="stories__forrester reveal reveal-delay-1">
+        <div>
+          <div class="stories__forrester-label">Forrester Total Economic Impact&trade; 2024</div>
+          <div class="stories__forrester-title">Salesforce B2B Commerce:<br/>The Business Case</div>
+        </div>
+        <div>
+          <div class="forrester-stat">
+            <div class="forrester-stat__value">289%</div>
+            <div class="forrester-stat__label">Return on Investment</div>
+          </div>
+          <div class="forrester-stat">
+            <div class="forrester-stat__value">$4.6M</div>
+            <div class="forrester-stat__label">Net Present Value over 3 years</div>
+          </div>
+          <div class="forrester-stat">
+            <div class="forrester-stat__value">&lt;6 mo</div>
+            <div class="forrester-stat__label">Payback period</div>
+          </div>
+        </div>
+        <a href="https://www.salesforce.com/commerce/b2b-commerce/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:rgba(109,211,255,0.85);margin-top:8px;">
+          Download full report
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 7 — SOCIAL PROOF BAND
+============================================================ -->
+<section class="proof-band">
+  <div class="container">
+    <div class="proof-band__grid">
+
+      <div class="proof-band__item reveal">
+        <div class="proof-band__value"><span class="counter" data-target="289">0</span>%</div>
+        <div class="proof-band__label">ROI</div>
+        <div class="proof-band__source">Forrester TEI 2024</div>
+      </div>
+
+      <div class="proof-band__item reveal reveal-delay-1">
+        <div class="proof-band__value">&lt;6 mo</div>
+        <div class="proof-band__label">Payback period</div>
+        <div class="proof-band__source">Forrester TEI 2024</div>
+      </div>
+
+      <div class="proof-band__item reveal reveal-delay-2">
+        <div class="proof-band__value">+<span class="counter" data-target="25">0</span>%</div>
+        <div class="proof-band__label">Spend per account</div>
+        <div class="proof-band__source">Salesforce Customer Data</div>
+      </div>
+
+      <div class="proof-band__item reveal reveal-delay-3">
+        <div class="proof-band__value"><span class="counter" data-target="18">0</span>K+</div>
+        <div class="proof-band__label">Hours automation savings</div>
+        <div class="proof-band__source">Per year, avg. customer</div>
+      </div>
+
+      <div class="proof-band__item reveal reveal-delay-4">
+        <div class="proof-band__value">+<span class="counter" data-target="6">0</span>pp</div>
+        <div class="proof-band__label">Margin improvement</div>
+        <div class="proof-band__source">Salesforce Customer Data</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 8 — LATEST INNOVATIONS
+============================================================ -->
+<section class="innovations section">
+  <div class="container">
+    <div class="innovations__header">
+      <span class="eyebrow">2026 Innovations</span>
+      <h2 class="section-title">What's Coming Next on Salesforce Commerce</h2>
+      <p class="section-subtitle">The platform evolves continuously &mdash; your investment gets more powerful with every release, at no additional cost.</p>
+    </div>
+
+    <div class="innovations__grid">
+
+      <div class="innovation-card reveal">
+        <span class="innovation-card__badge">&#10024; New</span>
+        <div class="innovation-card__icon">&#128221;</div>
+        <div class="innovation-card__title">Request for Quote</div>
+        <div class="innovation-card__body">Buyers submit RFQs directly in the portal. Negotiation, approval, and conversion to order &mdash; all in one digital workflow with full audit trail.</div>
+        <a href="https://www.salesforce.com/commerce/innovations/" target="_blank" rel="noopener" class="innovation-card__link">
+          Learn more <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="innovation-card reveal reveal-delay-1">
+        <span class="innovation-card__badge">&#129302; Agentic</span>
+        <div class="innovation-card__icon">&#128640;</div>
+        <div class="innovation-card__title">Agentic Order Routing</div>
+        <div class="innovation-card__body">AI agents automatically route orders to optimal fulfillment nodes based on inventory, proximity, contract terms, and cost &mdash; zero manual intervention.</div>
+        <a href="https://www.salesforce.com/commerce/innovations/" target="_blank" rel="noopener" class="innovation-card__link">
+          Learn more <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="innovation-card reveal reveal-delay-2">
+        <span class="innovation-card__badge">&#129302; Agentic</span>
+        <div class="innovation-card__icon">&#129503;</div>
+        <div class="innovation-card__title">Agentic Order Support</div>
+        <div class="innovation-card__body">AI-powered support agents handle order status, returns, and modifications autonomously &mdash; escalating to human agents only when genuinely needed.</div>
+        <a href="https://www.salesforce.com/commerce/innovations/" target="_blank" rel="noopener" class="innovation-card__link">
+          Learn more <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="innovation-card reveal reveal-delay-3">
+        <span class="innovation-card__badge">&#128161; New</span>
+        <div class="innovation-card__icon">&#9881;</div>
+        <div class="innovation-card__title">Dynamic Attribute-Based Configuration</div>
+        <div class="innovation-card__body">Complex product configurations with dynamic attribute rules &mdash; ensuring buyers always build valid, orderable combinations without CS assistance.</div>
+        <a href="https://www.salesforce.com/commerce/innovations/" target="_blank" rel="noopener" class="innovation-card__link">
+          Learn more <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 9 — ROI CALCULATOR
+============================================================ -->
+<section class="roi section" id="roi">
+  <div class="container">
+    <div class="roi__header">
+      <span class="eyebrow">ROI Calculator</span>
+      <h2 class="section-title">Your Business Case, Grounded in Your Numbers</h2>
+      <p class="section-subtitle">Based on Forrester TEI 2024 methodology, calibrated to Erickson Living's $500M GMV scale. Adjust inputs to see your potential value.</p>
+    </div>
+
+    <div class="roi__layout">
+
+      <!-- Panel A — Forrester Benchmarks -->
+      <div class="roi__panel-a reveal">
+        <div class="roi__panel-a-title">&#128203; Forrester TEI 2024 — Composite Benchmark</div>
+        <div class="roi__stat-grid">
+          <div class="roi__stat">
+            <div class="roi__stat-value">289%</div>
+            <div class="roi__stat-label">3-year ROI</div>
+          </div>
+          <div class="roi__stat">
+            <div class="roi__stat-value">$4.6M</div>
+            <div class="roi__stat-label">Net Present Value</div>
+          </div>
+          <div class="roi__stat">
+            <div class="roi__stat-value">&lt;6 mo</div>
+            <div class="roi__stat-label">Payback period</div>
+          </div>
+          <div class="roi__stat">
+            <div class="roi__stat-value">+25%</div>
+            <div class="roi__stat-label">Spend per account</div>
+          </div>
+        </div>
+        <div class="roi__forrester-badge">
+          Based on a composite organization representative of interviewed customers. Individual results will vary.
+          Source: Forrester Total Economic Impact&trade; of Salesforce B2B Commerce, 2024.
+        </div>
+      </div>
+
+      <!-- Panel C — Calculator -->
+      <div class="roi__panel-c reveal reveal-delay-1">
+        <div class="roi__panel-c-title">&#128270; Estimate Your Value</div>
+
+        <div class="roi__input-group">
+          <label class="roi__label" for="gmv">Annual GMV ($)</label>
+          <input class="roi__input" type="number" id="gmv" value="500000000" min="0" step="1000000" />
+        </div>
+
+        <div class="roi__input-group">
+          <label class="roi__label" for="aov">Average Order Value ($)</label>
+          <input class="roi__input" type="number" id="aov" value="450" min="0" />
+        </div>
+
+        <div class="roi__input-group">
+          <label class="roi__label" for="conversion">Current Conversion Rate (%)</label>
+          <input class="roi__input" type="number" id="conversion" value="2.5" min="0" max="100" step="0.1" />
+        </div>
+
+        <div class="roi__input-group">
+          <label class="roi__label" for="agents">CS / Procurement Staff</label>
+          <input class="roi__input" type="number" id="agents" value="40" min="0" />
+        </div>
+
+        <div class="roi__outputs" id="roiOutputs">
+          <div class="roi__output-item">
+            <span class="roi__output-label">Additional Annual Revenue</span>
+            <span class="roi__output-value" id="outRevenue">$125M</span>
+          </div>
+          <div class="roi__output-item">
+            <span class="roi__output-label">Staff Hours Reclaimed / Year</span>
+            <span class="roi__output-value" id="outHours">18,720 hrs</span>
+          </div>
+          <div class="roi__output-item">
+            <span class="roi__output-label">Off-Contract Spend Recovered</span>
+            <span class="roi__output-value" id="outSpend">$12.5M</span>
+          </div>
+          <div class="roi__output-item">
+            <span class="roi__output-label">Estimated 3-Year NPV</span>
+            <span class="roi__output-value" id="outNpv">$18.3M</span>
+          </div>
+        </div>
+        <div class="roi__disclaimer">
+          &#9432; Estimates based on Forrester TEI 2024 B2B multipliers and Salesforce customer data. These projections are illustrative and not a guarantee of specific results. Actual outcomes depend on implementation scope, customer size, and business conditions.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 10 — CTA
+============================================================ -->
+<section class="cta-section">
+  <div class="container">
+    <span class="cta-section__eyebrow">Next Steps</span>
+    <h2 class="cta-section__title reveal">Let's Build What's Next for<br/>Erickson Living Management</h2>
+    <p class="cta-section__sub reveal reveal-delay-1">Tradd Raizes is ready to walk through the business case, answer architecture questions, and map out a path from your current platform to Salesforce in weeks &mdash; not quarters.</p>
+
+    <div class="cta-section__ctas reveal reveal-delay-2">
+      <a href="mailto:t.raizes@salesforce.com" class="btn btn-primary" style="font-size:16px;padding:16px 32px;">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email Tradd Raizes
+      </a>
+      <a href="#roi" class="btn btn-secondary" style="font-size:16px;padding:16px 32px;">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Review Your ROI
+      </a>
+    </div>
+
+    <div class="cta-section__contact reveal reveal-delay-3">
+      <div class="cta-section__avatar">TR</div>
+      <div class="cta-section__contact-text">
+        <div class="cta-section__contact-name">Tradd Raizes</div>
+        <div class="cta-section__contact-title">Regional VP Commerce &mdash; t.raizes@salesforce.com</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 11 — FOOTER
+============================================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+
+      <!-- AE Contact -->
+      <div>
+        <div class="footer__col-title">Your Salesforce Contact</div>
+        <div class="footer__ae-name">Tradd Raizes</div>
+        <div class="footer__ae-title">Regional VP Commerce</div>
+        <a href="mailto:t.raizes@salesforce.com" class="footer__ae-link">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          t.raizes@salesforce.com
+        </a>
+      </div>
+
+      <!-- Resources -->
+      <div>
+        <div class="footer__col-title">Resources</div>
+        <ul class="footer__links">
+          <li><a href="https://www.salesforce.com/commerce/b2b-commerce/" target="_blank" rel="noopener">Salesforce B2B Commerce</a></li>
+          <li><a href="https://www.salesforce.com/products/order-management/overview/" target="_blank" rel="noopener">Order Management System</a></li>
+          <li><a href="https://www.salesforce.com/commerce/innovations/" target="_blank" rel="noopener">Commerce Innovations 2026</a></li>
+          <li><a href="https://www.salesforce.com/resources/research-reports/forrester-tei-b2b-commerce/" target="_blank" rel="noopener">Forrester TEI Report 2024</a></li>
+          <li><a href="https://www.salesforce.com/customer-success-stories/" target="_blank" rel="noopener">Customer Success Stories</a></li>
+          <li><a href="https://www.youtube.com/watch?v=y2jyhwFd2VY" target="_blank" rel="noopener">Siemens × Salesforce Video</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <div class="footer__col-title">Legal &amp; Disclosures</div>
+        <div class="footer__legal">
+          &copy; 2026 Salesforce, Inc. All rights reserved. Salesforce, Agentforce, and related marks are trademarks of salesforce.com, inc.
+          <br/><br/>
+          This showcase was prepared specifically for Erickson Living Management and contains forward-looking statements and illustrative projections. ROI figures are based on Forrester Total Economic Impact&trade; methodology and composite customer data &mdash; individual results will vary based on implementation scope, business conditions, and other factors.
+          <br/><br/>
+          Prepared by Tradd Raizes, Regional VP Commerce &middot; May 2026
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer__bottom">
+      <div class="footer__copy">Erickson Living Management &times; Salesforce Commerce Showcase &middot; 2026</div>
+      <div class="footer__logos">
+        <svg class="footer__sf-logo" viewBox="0 0 130 35" xmlns="http://www.w3.org/2000/svg" aria-label="Salesforce">
+          <path d="M20 8c3-3 7-5 11-5 5 0 10 3 13 8a18 18 0 0 1 7-2c10 0 18 8 18 18s-8 18-18 18a18 18 0 0 1-4-.5A13 13 0 0 1 36 33c-2 0-5-.7-7-2C27 36 22 40 16 40 10 40 5 36 3 30a14 14 0 0 1-3 0C0 30-7 23-7 15-7 7-1 1 8 1a16 16 0 0 1 12 7" fill="white"/>
+        </svg>
+        <svg class="footer__el-logo" viewBox="0 0 128.6 27.4" xmlns="http://www.w3.org/2000/svg" aria-label="Erickson">
+          <path d="M31.2,12.8C22.7,21.5,7.8,12,0,26.6C8.7,16.2,24.5,25.4,31.2,12.8z" fill="white"/>
+          <path d="M34.5,6.4c-8.4,8.7-23.4-0.8-31.2,13.7C12.1,9.8,27.9,19,34.5,6.4z" fill="white"/>
+          <path d="M37.9,0C29.5,8.7,14.6-0.8,6.8,13.7C15.5,3.4,31.3,12.6,37.9,0z" fill="white"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+  // ── Nav shadow on scroll ──────────────────────────────────────
+  const nav = document.getElementById('mainNav');
+  const onScroll = () => {
+    if (window.scrollY > 10) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ── Intersection Observer: scroll reveals ─────────────────────
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ── Counter animation ─────────────────────────────────────────
+  function animateCounter(el) {
+    const target = parseInt(el.dataset.target);
+    const duration = 1800;
+    const start = performance.now();
+    const tick = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(eased * target).toLocaleString();
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = target.toLocaleString();
+    };
+    requestAnimationFrame(tick);
+  }
+
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+  // ── ROI Calculator ────────────────────────────────────────────
+  function calcROI() {
+    const gmv     = parseFloat(document.getElementById('gmv').value) || 500000000;
+    const aov     = parseFloat(document.getElementById('aov').value) || 450;
+    const conv    = parseFloat(document.getElementById('conversion').value) || 2.5;
+    const agents  = parseFloat(document.getElementById('agents').value) || 40;
+
+    // Additional revenue: +25% spend per account applied to GMV
+    const addRevenue = gmv * 0.25;
+
+    // Hours: 40% case reduction × agents × ~1200 hrs/yr each
+    const hoursReclaimed = Math.round(agents * 1200 * 0.40);
+
+    // Off-contract recovery: ~2.5% of GMV
+    const offContract = gmv * 0.025;
+
+    // 3-year NPV: Forrester composite scaled to GMV (Forrester $4.6M at ~$50M GMV)
+    const scaleFactor = gmv / 50000000;
+    const npv = 4600000 * Math.min(scaleFactor, 20) * 0.60; // discount for scale
+
+    document.getElementById('outRevenue').textContent = '$' + abbreviate(addRevenue);
+    document.getElementById('outHours').textContent   = hoursReclaimed.toLocaleString() + ' hrs';
+    document.getElementById('outSpend').textContent   = '$' + abbreviate(offContract);
+    document.getElementById('outNpv').textContent     = '$' + abbreviate(npv);
+  }
+
+  function abbreviate(n) {
+    if (n >= 1e9) return (n/1e9).toFixed(1) + 'B';
+    if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+    if (n >= 1e3) return (n/1e3).toFixed(0) + 'K';
+    return n.toFixed(0);
+  }
+
+  ['gmv','aov','conversion','agents'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calcROI);
+  });
+  calcROI(); // initial render
+
+  // ── HeyGen video injection (poll on load) ─────────────────────
+  // Video ID: c0804127760d492c8e9ee88c3382de51
+  // When video is ready, replace placeholder with actual video
+  const VIDEO_ID = 'c0804127760d492c8e9ee88c3382de51';
+
+  async function checkVideo() {
+    try {
+      const resp = await fetch(
+        `https://api.heygen.com/v1/video_status.get?video_id=${VIDEO_ID}`,
+        { headers: { 'X-Api-Key': 'sk_V2_hgu_kB87tAsNV9c_Bm5sEeV6rAxc0d9LpkEGWvoWln674FEl' } }
+      );
+      const data = await resp.json();
+      const status = data?.data?.status;
+      const videoUrl = data?.data?.video_url;
+
+      if (status === 'completed' && videoUrl) {
+        injectVideo(videoUrl);
+      } else if (status === 'processing' || status === 'pending' || status === 'waiting') {
+        // Retry in 30 seconds
+        setTimeout(checkVideo, 30000);
+      }
+    } catch(e) {
+      // silently fail — placeholder stays
+    }
+  }
+
+  function injectVideo(url) {
+    const wrap = document.getElementById('execVideoWrap');
+    if (!wrap) return;
+    // Replace placeholder with video element
+    wrap.innerHTML = `<video
+      src="${url}"
+      controls
+      poster=""
+      style="width:100%;height:100%;border-radius:10px;object-fit:cover;"
+      preload="metadata">
+    </video>`;
+    // Update watch button
+    const btn = document.getElementById('watchVideoBtn');
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const vid = wrap.querySelector('video');
+        if (vid) { vid.scrollIntoView({behavior:'smooth'}); vid.play(); }
+      });
+    }
+  }
+
+  // Start polling when page loads
+  window.addEventListener('load', () => setTimeout(checkVideo, 3000));
+</script>
+
+</body>
+</html>
